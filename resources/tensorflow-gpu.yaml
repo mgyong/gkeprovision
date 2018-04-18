@@ -1,0 +1,37 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: tf-jupyter
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: tf-jupyter
+    spec:
+      containers:
+      - name: tensorflow
+        image: tensorflow/tensorflow:latest-gpu
+        ports:
+        - containerPort: 8888
+        resources:
+          limits:
+            nvidia.com/gpu: 1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tf-jupyter-service
+  labels:
+    app: tf-jupyter
+spec:
+  selector:
+    app: tf-jupyter
+  ports:
+  - port: 8888
+    protocol: TCP
+    nodePort: 30061
+  type: LoadBalancer
+---
+
